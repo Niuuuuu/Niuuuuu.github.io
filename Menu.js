@@ -1,4 +1,4 @@
-
+(function() { // module pattern
 	var canvas = document.getElementById("myCanvas");
 	var context = canvas.getContext("2d");
 	
@@ -148,3 +148,7 @@
 			canvas.addEventListener("mouseup", checkClick);
 		}
 	}
+
+	 update();
+
+	})();
