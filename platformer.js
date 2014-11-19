@@ -376,9 +376,10 @@
   document.addEventListener('keydown', function(ev) { return onkey(ev, ev.keyCode, true);  }, false);
   document.addEventListener('keyup',   function(ev) { return onkey(ev, ev.keyCode, false); }, false);
 
-  get("level_1.json", function(req) {
+  function game_start() {
+    get("level_1.json", function(req) {
     setup(JSON.parse(req.responseText));
-    frame();
+    frame();}
   });
 
 })();
