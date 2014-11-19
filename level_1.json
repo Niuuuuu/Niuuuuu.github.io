@@ -277,6 +277,20 @@
                  "width":32,
                  "x":511.666666666667,
                  "y":703
+                }, 
+                {
+                 "height":50,
+                 "name":"treasure",
+                 "properties":
+                    {
+
+                    },
+                 "rotation":0,
+                 "type":"treasure",
+                 "visible":true,
+                 "width":50,
+                 "x":1534,
+                 "y":1128
                 }],
          "opacity":1,
          "type":"objectgroup",
