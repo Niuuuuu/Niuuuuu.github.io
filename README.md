@@ -17,4 +17,4 @@ License
 
 Play the game
 =========
-[Here](http://username.github.io)
+[Here](http://Niuuuuu.github.io)
