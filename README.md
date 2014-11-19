@@ -1,7 +1,7 @@
 
 
 Javascript Tiny-Platformer
-====
+======
 Tis is for EECE 310 Project Only
 
 * view the [source](https://github.com/jakesgordon/javascript-tiny-platformer)
@@ -16,5 +16,5 @@ License
 
 
 Play the game
-=============
-[Here]http://username.github.io
+=========
+[Here](http://username.github.io)
