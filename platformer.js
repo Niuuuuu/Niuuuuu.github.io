@@ -263,7 +263,7 @@
   }
 
   function renderPlayer(ctx, dt) {
-    ctx.fillStyle = COLOR.YELLOW;
+    ctx.fillStyle = COLOR.PINK;
     ctx.fillRect(player.x + (player.dx * dt), player.y + (player.dy * dt), TILE, TILE);
 
     var n, max;
@@ -376,13 +376,20 @@
   document.addEventListener('keydown', function(ev) { return onkey(ev, ev.keyCode, true);  }, false);
   document.addEventListener('keyup',   function(ev) { return onkey(ev, ev.keyCode, false); }, false);
 
-
   function start_game() {
   get("level_1.json", function(req) {
     setup(JSON.parse(req.responseText));
     frame();
   }); 
   } 
+
+  function start_menu() {
+  get("menu.json", function(req) {
+    setup(JSON.parse(req.responseText));
+    frame();
+  }); 
+  } 
+
 
 
 if (confirm("wanna play???")){
@@ -393,7 +400,9 @@ else{
    
     window.alert("why u no play");
 
-}
+    start_menu();
 
+
+}
 
 })();
