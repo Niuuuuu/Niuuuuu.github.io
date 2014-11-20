@@ -81,20 +81,32 @@
   // UPDATE LOOP
   //-------------------------------------------------------------------------
 
-  var y_position = [350,750,950];
-  var x_position = 750;
+  var y_position = [680,950,1200];
+  var x_position = 1850;
   var swtich_stat=0;
+  var game_stat =0; 
   function onkey(ev, key, down) {
     switch(key) {
       case KEY.LEFT:  player.left  = down; ev.preventDefault(); return false;
       case KEY.RIGHT: player.right = down; ev.preventDefault(); return false;
-      case KEY.SPACE: player.jump  = down; ev.preventDefault(); return false;
-      case KEY.UP:    player.x = x_position; 
+      case KEY.SPACE: 
+            switch(game_stat){
+                case 0 : if(player.y == y_position[0]){ start_game();}
+                case 1 :player.jump  = down;
+
+            }ev.preventDefault(); return false;
+      case KEY.UP:     
             switch(swtich_stat){
-              case 0 : player.y = y_position[0]; swtich_stat = 2; break;
-              case 1 : player.y = y_position[1]; swtich_stat = 0; break;
-              case 2 : player.y = y_position[2]; swtich_stat = 1; break; 
-             }  
+              case 0 :player.x = x_position; player.y = y_position[0]; swtich_stat = 2; break;
+              case 1 :player.x = x_position; player.y = y_position[1]; swtich_stat = 0; break;
+              case 2 :player.x = x_position; player.y = y_position[2]; swtich_stat = 1; break; 
+             } ev.preventDefault(); return false;
+      case KEY.DOWN:     
+            switch(swtich_stat){
+              case 0 :player.x = x_position; player.y = y_position[0]; swtich_stat = 1; break;
+              case 1 :player.x = x_position; player.y = y_position[1]; swtich_stat = 2; break;
+              case 2 :player.x = x_position; player.y = y_position[2]; swtich_stat = 0; break; 
+             }  ev.preventDefault(); return false;
 
     }
   }
@@ -362,7 +374,7 @@
 
   //-------------------------------------------------------------------------
   // THE GAME LOOP
-  //-------------------------------------------------------------------------
+    //-------------------------------------------------------------------------
   
   var counter = 0, dt = 0, now,
       last = timestamp(),
@@ -383,10 +395,18 @@
     requestAnimationFrame(frame, canvas);
   }
   
+ 
+
+
   document.addEventListener('keydown', function(ev) { return onkey(ev, ev.keyCode, true);  }, false);
-  document.addEventListener('keyup',   function(ev) { return onkey(ev, ev.keyCode, false); }, false);
+  
 
   function start_game() {
+   swtich_stat= NaN;
+   game_stat =1;
+   GRAVITY  = 9.8 * 6;
+   document.addEventListener('keyup',   function(ev) { return onkey(ev, ev.keyCode, false); }, false);
+
   get("level_1.json", function(req) {
     setup(JSON.parse(req.responseText));
     frame();
@@ -394,6 +414,10 @@
   } 
 
   function start_menu() {
+
+    GRAVITY  = 0;
+    game_stat =0;
+ 
   get("menu.json", function(req) {
     setup(JSON.parse(req.responseText));
     frame();
@@ -402,13 +426,13 @@
 
 
 
-if (confirm("wanna play???")){
+if (confirm("click OK to directly go to the game , or click cancel to go to the menu screen")){
     window.alert("game starting!!");
     start_game();
 }
 else{
    
-    window.alert("why u no play");
+    window.alert("enterning menu screen");
 
     start_menu();
 
