@@ -81,11 +81,21 @@
   // UPDATE LOOP
   //-------------------------------------------------------------------------
 
+  var y_position = [350,750,950];
+  var x_position = 750;
+  var swtich_stat=0;
   function onkey(ev, key, down) {
     switch(key) {
       case KEY.LEFT:  player.left  = down; ev.preventDefault(); return false;
       case KEY.RIGHT: player.right = down; ev.preventDefault(); return false;
       case KEY.SPACE: player.jump  = down; ev.preventDefault(); return false;
+      case KEY.UP:    player.x = x_position; 
+            switch(swtich_stat){
+              case 0 : player.y = y_position[0]; swtich_stat = 2; break;
+              case 1 : player.y = y_position[1]; swtich_stat = 0; break;
+              case 2 : player.y = y_position[2]; swtich_stat = 1; break; 
+             }  
+
     }
   }
   
