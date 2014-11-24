@@ -84,7 +84,7 @@
     switch(key) {
       case KEY.LEFT:  player.left  = down; ev.preventDefault(); return false;
       case KEY.RIGHT: player.right = down; ev.preventDefault(); return false;
-      case KEY.SPACE: pause_game = (!pause_game); /*player.jump  = down;*/ ev.preventDefault(); return false;
+      case KEY.SPACE: pause_game = (!pause_game); console.log(pause_game);/*player.jump  = down;*/ ev.preventDefault(); return false;
     }
   }
   
