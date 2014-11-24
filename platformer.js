@@ -84,17 +84,11 @@
     switch(key) {
       case KEY.LEFT:  player.left  = down; ev.preventDefault(); return false;
       case KEY.RIGHT: player.right = down; ev.preventDefault(); return false;
-      case KEY.SPACE: pause(); /*player.jump  = down;*/ ev.preventDefault(); return false;
+      case KEY.SPACE: pause_game = (!pause_game); /*player.jump  = down;*/ ev.preventDefault(); return false;
     }
   }
-  function pause(){
-
-   while(true)
-   {
-
-   }
-
-  }
+  
+  var pause_game = false;
 
   function update(dt) {
     updatePlayer(dt);
@@ -365,6 +359,7 @@
       fpsmeter = new FPSMeter({ decimals: 0, graph: true, theme: 'dark', left: '5px' });
   
   function frame() {
+    if (!pause_game){
     fpsmeter.tickStart();
   now = timestamp();
     dt = dt + Math.min(1, (now - last) / 1000);
@@ -377,6 +372,7 @@
     counter++;
     fpsmeter.tick();
     requestAnimationFrame(frame, canvas);
+  }
   }
   
   document.addEventListener('keydown', function(ev) { return onkey(ev, ev.keyCode, true);  }, false);
