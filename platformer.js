@@ -1,5 +1,4 @@
 (function() { // module pattern
-
   //-------------------------------------------------------------------------
   // POLYFILLS
   //-------------------------------------------------------------------------
@@ -310,7 +309,7 @@
   //-------------------------------------------------------------------------
   
   function setup(map) {
-    var data    = map.layers[0].data,
+  var data    = map.layers[0].data,
         objects = map.layers[1].objects,
         n, obj, entity;
 
@@ -346,7 +345,6 @@
     entity.right    = obj.properties.right;
     entity.start    = { x: obj.x, y: obj.y }
     entity.killed = entity.collected = 0;
-    entity.jump     = obj.properties.jump;
     return entity;
   }
 
@@ -360,7 +358,7 @@
   
   function frame() {
     fpsmeter.tickStart();
-    now = timestamp();
+  now = timestamp();
     dt = dt + Math.min(1, (now - last) / 1000);
     while(dt > step) {
       dt = dt - step;
@@ -376,10 +374,28 @@
   document.addEventListener('keydown', function(ev) { return onkey(ev, ev.keyCode, true);  }, false);
   document.addEventListener('keyup',   function(ev) { return onkey(ev, ev.keyCode, false); }, false);
 
-  //function game_start() {
-    get("level_1.json", function(req) {
+  get("level.json", function(req) {
     setup(JSON.parse(req.responseText));
-    frame();
-  }); //}
+  console.log("before frame call");
+  //document.getElementById("myDialog").showModal();
+
+  $(document).ready(function(){
+
+    //$( "#dialog" ).dialog();
+    $("#dialog").dialog({
+        modal: true,
+
+            width: 600,
+            height: 400,
+            //overlay: { backgroundColor: "#000", opacity: 0 },
+            //buttons:{ "Close": function() { $(this).dialog("close"); } },
+            close: function(ev, ui) { $(this).remove();frame(); },
+    });
+
+
+  });
+  
+    
+  });
 
 })();
