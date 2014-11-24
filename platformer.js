@@ -365,13 +365,14 @@
   function frame() {
     
     fpsmeter.tickStart();
+  if (!pause_game){
   now = timestamp();
     dt = dt + Math.min(1, (now - last) / 1000);
     while(dt > step) {
       dt = dt - step;
       update(step);
     }
-    if (!pause_game){
+    
     render(ctx, counter, dt);
   }
     last = now;
