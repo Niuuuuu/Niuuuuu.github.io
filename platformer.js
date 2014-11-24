@@ -84,10 +84,21 @@
     switch(key) {
       case KEY.LEFT:  player.left  = down; ev.preventDefault(); return false;
       case KEY.RIGHT: player.right = down; ev.preventDefault(); return false;
-      case KEY.SPACE: player.jump  = down; ev.preventDefault(); return false;
+      case KEY.SPACE: pause(); /*player.jump  = down;*/ ev.preventDefault(); return false;
     }
   }
-  
+  function pause(){
+
+   $('#todos').bind('show', function(ev){
+  ev.pause();
+
+  $(this).load('todos.html', function(){
+    ev.resume();
+  });
+  })
+
+  }
+
   function update(dt) {
     updatePlayer(dt);
     updateMonsters(dt);
