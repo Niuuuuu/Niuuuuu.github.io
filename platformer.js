@@ -363,7 +363,7 @@
       fpsmeter = new FPSMeter({ decimals: 0, graph: true, theme: 'dark', left: '5px' });
   
   function frame() {
-    if (!pause_game){
+    
     fpsmeter.tickStart();
   now = timestamp();
     dt = dt + Math.min(1, (now - last) / 1000);
@@ -371,12 +371,14 @@
       dt = dt - step;
       update(step);
     }
+    if (!pause_game){
     render(ctx, counter, dt);
+  }
     last = now;
     counter++;
     fpsmeter.tick();
     requestAnimationFrame(frame, canvas);
-  }
+  
    console.log("in the frame loop");
   }
   
