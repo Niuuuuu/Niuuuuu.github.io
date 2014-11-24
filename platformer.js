@@ -89,13 +89,10 @@
   }
   function pause(){
 
-   $('#todos').bind('show', function(ev){
-  ev.pause();
+   while(true)
+   {
 
-  $(this).load('todos.html', function(){
-    ev.resume();
-  });
-  })
+   }
 
   }
 
