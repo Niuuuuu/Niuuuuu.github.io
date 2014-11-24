@@ -90,7 +90,7 @@
                      console.log(pause_game);
     }
   }
-  
+   
   var pause_game = false;
   var pause_key_count = 0;
 
