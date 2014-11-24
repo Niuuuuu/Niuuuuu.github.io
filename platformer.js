@@ -373,6 +373,7 @@
     fpsmeter.tick();
     requestAnimationFrame(frame, canvas);
   }
+   console.log("in the frame loop");
   }
   
   document.addEventListener('keydown', function(ev) { return onkey(ev, ev.keyCode, true);  }, false);
