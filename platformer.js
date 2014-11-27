@@ -57,7 +57,7 @@
       IMPULSE  = 1500,    // default player jump impulse
       COLOR    = { BLACK: '#000000', YELLOW: '#ECD078', BRICK: '#D95B43', PINK: '#C02942', PURPLE: '#542437', GREY: '#333', SLATE: '#53777A', GOLD: 'gold' },
       COLORS   = [ COLOR.YELLOW, COLOR.BRICK, COLOR.PINK, COLOR.PURPLE, COLOR.GREY ],
-      KEY      = { SPACE: 32, LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40 };
+      KEY      = { SPACE: 32, LEFT: 37, UP: 38, RIGHT: 39, DOWN: 40, KEY_P :80 };
       
   var fps      = 60,
       step     = 1/fps,
@@ -69,12 +69,41 @@
       monsters = [],
       treasure = [],
       cells    = [];
+	  //
+	  sliders = [];
   
   var t2p      = function(t)     { return t*TILE;                  },
       p2t      = function(p)     { return Math.floor(p/TILE);      },
       cell     = function(x,y)   { return tcell(p2t(x),p2t(y));    },
       tcell    = function(tx,ty) { return cells[tx + (ty*MAP.tw)]; };
   
+
+  function end_game()
+{
+
+console.log("in end game ()");
+
+$(document).ready(function(){
+
+    
+    $("#dialog2").dialog({
+        modal: true,
+
+            width: 600,
+            height: 400,
+            //overlay: { backgroundColor: "#000", opacity: 0 },
+            //buttons:{ "Close": function() { $(this).dialog("close"); } },
+            
+    });
+
+
+
+  }); 
+
+
+
+}
+
   
   //-------------------------------------------------------------------------
   // UPDATE LOOP
@@ -83,10 +112,12 @@
   function onkey(ev, key, down) {
     switch(key) {
       case KEY.LEFT:  player.left  = down; ev.preventDefault(); return false;
-      case KEY.RIGHT: player.right = down; console.log("right"); ev.preventDefault(); return false;
+      case KEY.RIGHT: player.right = down;  ev.preventDefault(); return false;
       case KEY.SPACE: player.jump  = down; ev.preventDefault(); return false;
-      case KEY.UP:   pause_key_count++; 
-                    if (pause_key_count % 2 == 0) {pause_game = (!pause_game); }
+      case KEY.UP:    end_game(); ev.preventDefault(); return false;
+      case KEY.KEY_P:   pause_key_count++; 
+                    if (pause_key_count % 2 == 0) {pause_game = (!pause_game);}
+                     
                      console.log(pause_game);
     }
   }
@@ -95,9 +126,25 @@
   var pause_key_count = 0;
 
   function update(dt) {
+  if (!pause_game){
     updatePlayer(dt);
     updateMonsters(dt);
+	//
+	updateSliders(dt);
     checkTreasure();
+    finishGame();
+  }
+  
+  }
+
+
+  function finishGame() {
+    if(player.killed == monsters.length) {
+      if(player.collected == treasure.length) {
+        pause_game=true;
+        end_game();
+      }
+    }
   }
 
   function updatePlayer(dt) {
@@ -120,6 +167,29 @@
           killPlayer(player);
       }
     }
+  }
+  
+  function updateSliders(dt){
+	var n, max;
+	for(n = 0, max = sliders.length; n < max; n++)
+	{
+		updateEntity(sliders[n], dt);
+		if(overlap(player.x, player.y, TILE, TILE, sliders[n].x, sliders[n].y, 5 * TILE, TILE)){
+			if((player.dy > 0) && (sliders[n].y - player.y > TILE/2)){
+				//should land on moving slider
+				//console.log("land");
+				player.y = t2p(p2t(player.y));       // clamp the y position to avoid falling into platform below
+				player.dy = 0;            			 // stop downward velocity
+				player.falling = false;   			 // no longer falling
+				player.jumping = false;   			 // (or jumping)
+				ny = 0; 
+				player.dx = sliders[n].dx;
+			}else{
+				//should bounce down
+				console.log("bounce");
+			}
+		}
+	}
   }
 
   function checkTreasure() {
@@ -188,6 +258,7 @@
         ny        = entity.y%TILE,
         cell      = tcell(tx,     ty),
         cellright = tcell(tx + 1, ty),
+		cell6right= tcell(tx + 6, ty),
         celldown  = tcell(tx,     ty + 1),
         celldiag  = tcell(tx + 1, ty + 1);
   
@@ -237,6 +308,17 @@
         entity.left  = true;
       }
     }
+	
+	if (entity.slider) {
+		if(entity.left && (cell || entity.x < 1474)){
+			entity.left = false;
+			entity.right = true;
+		}
+		else if(entity.right && cell6right){
+			entity.right = false;
+			entity.left = true;
+		}
+	}
   
     entity.falling = ! (celldown || (nx && celldiag));
   
@@ -252,6 +334,7 @@
     renderTreasure(ctx, frame);
     renderPlayer(ctx, dt);
     renderMonsters(ctx, dt);
+	renderSliders(ctx, dt);
   }
 
   function renderMap(ctx) {
@@ -291,6 +374,19 @@
         ctx.fillRect(monster.x + (monster.dx * dt), monster.y + (monster.dy * dt), TILE, TILE);
     }
   }
+  
+  function renderSliders(ctx, dt){
+	ctx.fillStyle = COLOR.PURPLE;
+	var n, k, max, slider;
+	for(n = 0, max = sliders.length ; n < max; n++){
+		slider = sliders[n];
+		for(k = 0; k < slider.size; k++){
+			//console.log("test");
+			//this is being called
+			ctx.fillRect(slider.x + TILE * k + (slider.dx * dt), slider.y + (slider.dy * dt), TILE, TILE)
+		}
+	}
+  }
 
   function renderTreasure(ctx, frame) {
     ctx.fillStyle   = COLOR.GOLD;
@@ -325,7 +421,8 @@
       switch(obj.type) {
       case "player"   : player = entity; break;
       case "monster"  : monsters.push(entity); break;
-      case "treasure" : treasure.push(entity); break;
+      case "treasure" : treasure.push(entity);break;
+	  case "slider" : sliders.push(entity); break;
       }
     }
 
@@ -347,6 +444,10 @@
     entity.monster  = obj.type == "monster";
     entity.player   = obj.type == "player";
     entity.treasure = obj.type == "treasure";
+	//
+	entity.slider   = obj.type == "slider";
+	entity.size     = obj.properties.size;
+	//
     entity.left     = obj.properties.left;
     entity.right    = obj.properties.right;
     entity.start    = { x: obj.x, y: obj.y }
@@ -364,23 +465,27 @@
   
   function frame() {
     
+    
+  
     fpsmeter.tickStart();
-  if (!pause_game){
   now = timestamp();
     dt = dt + Math.min(1, (now - last) / 1000);
     while(dt > step) {
       dt = dt - step;
       update(step);
+	  
+	   //console.log("in the update loop");
     }
     
     render(ctx, counter, dt);
-  }
+  
     last = now;
     counter++;
     fpsmeter.tick();
-    requestAnimationFrame(frame, canvas);
   
-   console.log("in the frame loop");
+    
+  requestAnimationFrame(frame, canvas);
+   //console.log("in the frame loop");
   }
   
   document.addEventListener('keydown', function(ev) { return onkey(ev, ev.keyCode, true);  }, false);
@@ -388,8 +493,12 @@
 
   get("level.json", function(req) {
     setup(JSON.parse(req.responseText));
+
   console.log("before frame call");
   //document.getElementById("myDialog").showModal();
+
+
+
 
   $(document).ready(function(){
 
@@ -401,7 +510,7 @@
             height: 400,
             //overlay: { backgroundColor: "#000", opacity: 0 },
             //buttons:{ "Close": function() { $(this).dialog("close"); } },
-            close: function(ev, ui) { $(this).remove();frame(); },
+            close: function(ev, ui) { /*$(this).remove();*/frame(); },
     });
 
 
