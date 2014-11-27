@@ -141,8 +141,10 @@ $(document).ready(function(){
   function finishGame() {
     if(player.killed == monsters.length) {
       if(player.collected == treasure.length) {
+
         pause_game=true;
         end_game();
+
       }
     }
   }
@@ -473,8 +475,7 @@ $(document).ready(function(){
     while(dt > step) {
       dt = dt - step;
       update(step);
-	  
-	   //console.log("in the update loop");
+
     }
     
     render(ctx, counter, dt);
@@ -485,7 +486,8 @@ $(document).ready(function(){
   
     
   requestAnimationFrame(frame, canvas);
-   //console.log("in the frame loop");
+
+
   }
   
   document.addEventListener('keydown', function(ev) { return onkey(ev, ev.keyCode, true);  }, false);
@@ -496,7 +498,6 @@ $(document).ready(function(){
 
   console.log("before frame call");
   //document.getElementById("myDialog").showModal();
-
 
 
 
